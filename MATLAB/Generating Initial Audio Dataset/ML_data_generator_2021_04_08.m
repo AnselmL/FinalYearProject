@@ -26,9 +26,14 @@ base_dir = 'E:\FYP\MATLAB';
 RIR_dir = 'E:\FYP\Room_IR_Database';
 RIR_file_ext = '.wav';
 
-out_base_dir = 'E:\FYP\ML_data_dir\simulated\1-fold_2021_04_08';
+out_base_dir = 'E:\FYP\ML_data_dir\1-fold';
 
-out_base_unnorm_dir = 'E:\FYP\ML_data_dir\simulated\unnorm\1-fold';
+%out_base_unnorm_dir = 'E:\FYP\ML_data_dir\simulated\unnorm\1-fold';
+
+noise_wav_dirs = load('TUT_wav_dirs').TUT_wav_dirs;
+
+
+                
 
 
 %az_target_sm_rm = -180:12.5:170;
@@ -41,6 +46,7 @@ out_base_unnorm_dir = 'E:\FYP\ML_data_dir\simulated\unnorm\1-fold';
 %row matrix of all desired target radii, specified in meters
 
 %radii_noise = [1,3,5]; %row matrix of all desired noise radii, specified in 
+%{
 noise_name_array = {'NOISEX-92','babble';
                     'NOISEX-92','buccaneer1';
                     'NOISEX-92','buccaneer2';
@@ -89,8 +95,8 @@ noise_name_array = {'NOISEX-92','babble';
                     'RSG-10','SIGNAL004-20kHz';
                     'RSG-10','SIGNAL024-20kHz';
                     };
-                
 
+%}
 mic_pos_Kayser_ie = [-0.0700,0,0;
                     0.0700,0,0];
                 
@@ -168,6 +174,7 @@ TIMIT_test_file_count = 1;
 
 dimensions = [2.5,2.5,3; 4,4,3; 6,6,3; 7.5,7.5,3;10,10,4; 12.5,12.5,4; 15,15,4;10,20,4]; % room dimensions specified with [x,y,z] coordinates
 
+
 alpha_plasterboard_ceilling = 0.0983;
 alpha_wood_ceilling = 0.147;
 
@@ -179,14 +186,14 @@ alpha_wood_f = 0.05;
 
 alpha_add = [0.2,0.4,0.6];
 
-alpha_array = [alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_carpet, alpha_plasterboard_ceilling;
-         alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_carpet, alpha_wood_ceilling;
-         alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_wood_f, alpha_plasterboard_ceilling;
-         alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_wood_f, alpha_wood_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_carpet, alpha_plasterboard_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_carpet, alpha_wood_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_wood_f, alpha_plasterboard_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_wood_f, alpha_wood_ceilling];
+alpha_array = [alpha_plaster, alpha_plaster, alpha_plaster, alpha_plaster,alpha_carpet, alpha_plasterboard_ceilling;
+         alpha_plaster, alpha_plaster, alpha_plaster, alpha_plaster,alpha_carpet, alpha_wood_ceilling;
+         alpha_plaster, alpha_plaster, alpha_plaster, alpha_plaster,alpha_wood_f, alpha_plasterboard_ceilling;
+         alpha_plaster, alpha_plaster, alpha_plaster, alpha_plaster,alpha_wood_f, alpha_wood_ceilling;
+         alpha_plywood, alpha_plywood, alpha_plywood, alpha_plywood,alpha_carpet, alpha_plasterboard_ceilling;
+         alpha_plywood, alpha_plywood, alpha_plywood, alpha_plywood,alpha_carpet, alpha_wood_ceilling;
+         alpha_plywood, alpha_plywood, alpha_plywood, alpha_plywood,alpha_wood_f, alpha_plasterboard_ceilling;
+         alpha_plywood, alpha_plywood, alpha_plywood, alpha_plywood,alpha_wood_f, alpha_wood_ceilling];
      
 %alpha = [0.6,0.4,0.2]; %absorption coefficients
 rt60 = [];
@@ -216,7 +223,8 @@ if isempty(TIMIT_cat_pool)
 end
 %}
     if isempty(noise_index_pool)
-        noise_index_pool = 1:size(noise_name_array,1);
+        %noise_index_pool = 1:size(noise_name_array,1);
+        noise_index_pool = 1:size(noise_wav_dirs,1);
     end
     if isempty(SNR_index_pool)    
         SNR_index_pool = 1:length(SNR);
@@ -227,11 +235,11 @@ end
     if isempty(el_index_pool)
         el_index_pool = 1:length(el_target);
     end
-    if isempty(alpha_index_pool)
+    if isempty(alpha_add_index_pool)
         alpha_add_index_pool = 1:length(alpha_add);
     end
     if isempty(alpha_index_pool)
-        alpha_index_pool = 1:size(alpha,1);
+        alpha_index_pool = 1:size(alpha_array,1);
     end
     if isempty(room_dim_index_pool)
         room_dim_index_pool = 1:length(dimensions);
@@ -469,11 +477,11 @@ end
         room_dim_index_pool=room_dim_index_pool(room_dim_index_pool~=room_dim_index);
         
         if room_dim_index < 4
-            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target_sm_rm, dimensions(room_dim_index,:), alpha(alpha_index,:) + alpha_add(alpha_add_index));
+            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target_sm_rm, dimensions(room_dim_index,:), alpha_array(alpha_index,:) + alpha_add(alpha_add_index));
         else
             radius_index = radius_index_pool(randperm(size(radius_index_pool,2),1));
             radius_index_pool=radius_index_pool(radius_index_pool~=radius_index);
-            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target(1,radius_index), dimensions(room_dim_index,:), alpha(alpha_index,:) + alpha_add(alpha_add_index));
+            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target(1,radius_index), dimensions(room_dim_index,:), alpha_array(alpha_index,:) + alpha_add(alpha_add_index));
         end
 
         if size(h,2) == 4
@@ -489,12 +497,16 @@ end
     end
     %this is where if I were to do data augmentation I might modify some things
     speech_binaural = fftfilt(BRIR,anechoic_speech);
-
+    %{
     noise_index = noise_index_pool(randperm(size(noise_index_pool,2),1));
     %noise_index = nearest(rand*size(noise_index_pool,1)+1);
     noise_index_pool=noise_index_pool(noise_index_pool~=noise_index);
     %do the noise stuff here
     noise_dir = strcat(base_dir,'\',noise_name_array{noise_index,1},'\',noise_name_array{noise_index,2},'.wav');
+    %}
+    noise_index = noise_index_pool(randperm(size(noise_index_pool,2),1));
+    noise_index_pool=noise_index_pool(noise_index_pool~=noise_index);
+    noise_dir = noise_wav_dirs{noise_index};
     [noise_wav,fs_noise] = audioread(noise_dir);
     if fs_noise ~= fs_speech
         noise_wav = resample(noise_wav,fs_speech,fs_noise);
@@ -505,8 +517,16 @@ end
     for chan = 1:size(noise_wav,2)
         noise_mono = noise_mono + noise_wav(:,chan);
     end
-
+    
+    if size(mic_position,1) > 2
+        mic_position_temp(1,:) = (mic_position(1,:) + mic_position(3,:))/2;
+        mic_position_temp(2,:) = (mic_position(2,:) + mic_position(4,:))/2;
+    end
     %noise_mono = noise_mono/max(max(abs(noise_mono)));
+    if 2*size(anechoic_speech,1) > length(noise_mono)
+        noise_mono_temp = [noise_mono;noise_mono];
+        noise_mono = noise_mono_temp;
+    end
     diffuse_noise = gen_isotropic_noise_2020_12_17(noise_mono,fs_noise,mic_position,size(anechoic_speech,1));
     if size(diffuse_noise,1) ~= size(speech_binaural,1)
         diffuse_noise = diffuse_noise(1:size(speech_binaural,1),1);
@@ -547,8 +567,13 @@ end
     yr = binaural_out(:,2);
     
     mbstoi = mbstoi_intermediate(xl,xr,yl,yr,fs_speech);
-    
+    out_base_dir = 'E:\FYP\ML_data_dir\1-fold';
     %equal_check = isequal(mbstoi,mbstoi_norm);
+    if measured_vs_simulated_index == 1
+        out_base_dir = strcat(out_base_dir,'\measured');
+    elseif measured_vs_simulated_index == 2
+        out_base_dir = strcat(out_base_dir,'\simulated');
+    end
     if ~isempty(TRAIN_strfind)
         out_dir = strcat(out_base_dir,'\',out_data_subdir,'\',num2str(TIMIT_train_file_count));
     elseif ~isempty(TEST_strfind)
@@ -583,9 +608,9 @@ end
             fprintf(fileID,'radius of target: %.2f \n',radii_target(1,radius_index));
         end   
         fprintf(fileID,'azimuth angle of target: %.2f \n',az_target(1,az_index));
-        fprintf(fileID,'90 degrees azimuth is the direction facing the listener, with 180 degrees being pure left channel and 0 degrees being pure right channel');
+        fprintf(fileID,'90 degrees azimuth is the direction facing the listener, with 180 degrees being pure left channel and 0 degrees being pure right channel \n');
         fprintf(fileID,'elevation angle of target: %.2f \n',el_target(1,el_index));
-        fprintf(fileID,'reverberation parameter alpha: %.2f \n',alpha(1,alpha_index));
+        fprintf(fileID,'reverberation parameter alpha: [%.4f, %.4f, %.4f, %.4f, %.4f, %.4f,] [\beta_{x1}, \beta_{x2}, \beta_{y1}, \beta_{y2}, \beta_{z1}, \beta_{z2}] \n',alpha_array(alpha_index,:) + alpha_add(1,alpha_add_index));
     elseif measured_vs_simulated_index == 1
         fprintf(fileID,'Impulse Response Parameters: \n');
         fprintf(fileID,'Measured \n');

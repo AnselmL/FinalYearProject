@@ -1,10 +1,11 @@
-clear all;
-addpath(genpath('E:\FYP\MATLAB\MBSTOI'));
-addpath(genpath('E:\FYP\MATLAB\submodules'));
-addpath(genpath('E:\FYP\MATLAB\other_dependencies'));
-addpath(genpath('E:\FYP\MATLAB\RIR-Generator-master'));
-addpath(genpath('E:\FYP\MATLAB\ANF-Generator-master'));
-
+%clear all;
+addpath(genpath('/home/al5517/MBSTOI'));
+addpath(genpath('/home/al5517/submodules'));
+addpath(genpath('/home/al5517/other_dependencies'));
+addpath(genpath('/home/al5517/RIR-Generator-master'));
+addpath(genpath('/home/al5517/ANF-Generator-master'));
+addpath(genpath('/home/al5517/INF-Generator-master'));
+addpath(genpath('/home/al5517/Generating_Initial_Dataset'));
 
 %{
 [x, fs_x] = audioread('anechoic_speech.wav');
@@ -13,22 +14,21 @@ y = rand(size(x,1),1);
 [z,p,fs_o] = v_addnoise(x,fs_x,10,'dxopEkn',y,fs_x);
 %}
 
-TIMIT_wav_dirs = load('TIMIT_wav_dirs').TIMIT_wav_dirs;
+TIMIT_wav_dirs2 = load('/home/al5517/Generating_Initial_Dataset/TIMIT_wav_dirs_server.mat');
 
+TIMIT_wav_dirs = TIMIT_wav_dirs2.TIMIT_wav_dirs_server;
 %TIMIT_wav_dirs_test = load('TIMIT_wav_dirs_split').TIMIT_wav_dirs_test;
 %TIMIT_wav_dirs_train = load('TIMIT_wav_dirs_split').TIMIT_wav_dirs_train;
 %TIMIT_wav_dirs_val = load('TIMIT_wav_dirs_split').TIMIT_wav_dirs_val;
 
-measured_BRIR_wav_dirs = load('measured_BRIR_wav_dirs').BRIR_wav_dirs;
+measured_BRIR_wav_dirs2 = load('/home/al5517/Generating_Initial_Dataset/measured_BRIR_wav_dirs_server.mat');
+measured_BRIR_wav_dirs = measured_BRIR_wav_dirs2.BRIR_wav_dirs_server;
 
+base_dir = '/home/al5517';
+%RIR_dir = 'E:\FYP\Room_IR_Database';
+%RIR_file_ext = '.wav';
 
-base_dir = 'E:\FYP\MATLAB';
-RIR_dir = 'E:\FYP\Room_IR_Database';
-RIR_file_ext = '.wav';
-
-out_base_dir = 'E:\FYP\ML_data_dir\simulated\1-fold_2021_04_08';
-
-out_base_unnorm_dir = 'E:\FYP\ML_data_dir\simulated\unnorm\1-fold';
+out_base_dir = '/home/al5517/ML_data/simulated/1-fold';
 
 
 %az_target_sm_rm = -180:12.5:170;
@@ -149,7 +149,6 @@ noise_index_pool = [];
 SNR_index_pool = [];
 az_index_pool = [];
 el_index_pool = [];
-alpha_add_index_pool = [];
 alpha_index_pool = [];
 room_dim_index_pool = [];
 radius_index_pool = [];
@@ -166,29 +165,8 @@ TIMIT_test_file_count = 1;
 
 %mic_pos = gen_mic_pos_Kayser_2020_12_17();
 
-dimensions = [2.5,2.5,3; 4,4,3; 6,6,3; 7.5,7.5,3;10,10,4; 12.5,12.5,4; 15,15,4;10,20,4]; % room dimensions specified with [x,y,z] coordinates
-
-alpha_plasterboard_ceilling = 0.0983;
-alpha_wood_ceilling = 0.147;
-
-alpha_plaster = 0.0283;
-alpha_plywood = 0.2;
-
-alpha_carpet = 0.182;
-alpha_wood_f = 0.05;
-
-alpha_add = [0.2,0.4,0.6];
-
-alpha_array = [alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_carpet, alpha_plasterboard_ceilling;
-         alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_carpet, alpha_wood_ceilling;
-         alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_wood_f, alpha_plasterboard_ceilling;
-         alpha_plaster, alpha_plaster_alpha_plaster_alpha_plaster,alpha_wood_f, alpha_wood_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_carpet, alpha_plasterboard_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_carpet, alpha_wood_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_wood_f, alpha_plasterboard_ceilling;
-         alpha_plywood, alpha_plywood_alpha_plywood_alpha_plywood,alpha_wood_f, alpha_wood_ceilling];
-     
-%alpha = [0.6,0.4,0.2]; %absorption coefficients
+dimensions = [2.5,2.5,3; 4,4,3; 6,6,3; 7.5,7.5,3;10,10,4; 12.5,12.5,4; 15,15,4;10,20,4; 20,20,5; 25,25,10;10,30,4; 30,30,15]; % room dimensions specified with [x,y,z] coordinates
+alpha = [0.6,0.4,0.2]; %absorption coefficients
 rt60 = [];
 az_target = -180:10:170;
 el_target = [-10,10];
@@ -203,7 +181,7 @@ if isempty(measured_BRIR_pool)
     measured_BRIR_pool = 1:size(measured_BRIR_wav_dirs,1);
 end
 while(~isempty(TIMIT_wav_pool))
-    clear BRIR
+    %clear BRIR
     
 %measured_BRIR_pool = 1:size(measured_BRIR_wav_dirs,1);
 %TIMIT_cat = ["train","val","test"];
@@ -219,25 +197,22 @@ end
         noise_index_pool = 1:size(noise_name_array,1);
     end
     if isempty(SNR_index_pool)    
-        SNR_index_pool = 1:length(SNR);
+        SNR_index_pool = 1:size(SNR,2);
     end
     if isempty(az_index_pool)
-        az_index_pool = 1:length(az_target);
+        az_index_pool = 1:size(az_target,2);
     end
     if isempty(el_index_pool)
-        el_index_pool = 1:length(el_target);
+        el_index_pool = 1:size(el_target,2);
     end
     if isempty(alpha_index_pool)
-        alpha_add_index_pool = 1:length(alpha_add);
-    end
-    if isempty(alpha_index_pool)
-        alpha_index_pool = 1:size(alpha,1);
+        alpha_index_pool = 1:size(alpha,2);
     end
     if isempty(room_dim_index_pool)
-        room_dim_index_pool = 1:length(dimensions);
+        room_dim_index_pool = 1:size(dimensions,1);
     end
     if isempty(radius_index_pool)
-        radius_index_pool = 1:length(radii_target);
+        radius_index_pool = 1:size(radii_target,2);
     end
     if isempty(measured_vs_simulated_pool)
         measured_vs_simulated_pool = 1:2;
@@ -316,6 +291,8 @@ end
         measured_BRIR_pool=measured_BRIR_pool(measured_BRIR_pool~=measured_BRIR_index);
         BRIR_dir = measured_BRIR_wav_dirs{measured_BRIR_index,1};
         [HRTF, fs_brir] = audioread(BRIR_dir);
+        
+        BRIR = zeros(size(HRTF,1),2);
         if fs_brir ~= fs_speech
             fs_brir = resample(fs_brir,fs_speech,fs_brir);
         end
@@ -460,22 +437,18 @@ end
         %alpha_index = nearest(rand*size(alpha_index_pool,2)+1);
         alpha_index_pool=alpha_index_pool(alpha_index_pool~=alpha_index);
         
-        alpha_add_index = alpha_add_index_pool(randperm(size(alpha_add_index_pool,2),1));
-        %alpha_index = nearest(rand*size(alpha_index_pool,2)+1);
-        alpha_add_index_pool=alpha_add_index_pool(alpha_add_index_pool~=alpha_add_index);
-        
         room_dim_index = room_dim_index_pool(randperm(size(room_dim_index_pool,2),1));
         %room_dim_index = nearest(rand*size(room_dim_index_pool,1)+1);
         room_dim_index_pool=room_dim_index_pool(room_dim_index_pool~=room_dim_index);
         
         if room_dim_index < 4
-            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target_sm_rm, dimensions(room_dim_index,:), alpha(alpha_index,:) + alpha_add(alpha_add_index));
+            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target_sm_rm, dimensions(room_dim_index,:), alpha(1,alpha_index));
         else
             radius_index = radius_index_pool(randperm(size(radius_index_pool,2),1));
             radius_index_pool=radius_index_pool(radius_index_pool~=radius_index);
-            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target(1,radius_index), dimensions(room_dim_index,:), alpha(alpha_index,:) + alpha_add(alpha_add_index));
+            h = gen_spatial_IR_2020_12_17(mic_position,az_target(1,az_index), el_target(1,el_index), radii_target(1,radius_index), dimensions(room_dim_index,:), alpha(1,alpha_index));
         end
-
+        BRIR = zeros(size(h,1),2);
         if size(h,2) == 4
             BRIR(:,1) = (h(:,1) + h(:,3))/2;
             BRIR(:,2) = (h(:,2) + h(:,4))/2;
@@ -494,7 +467,7 @@ end
     %noise_index = nearest(rand*size(noise_index_pool,1)+1);
     noise_index_pool=noise_index_pool(noise_index_pool~=noise_index);
     %do the noise stuff here
-    noise_dir = strcat(base_dir,'\',noise_name_array{noise_index,1},'\',noise_name_array{noise_index,2},'.wav');
+    noise_dir = strcat(base_dir,'/',noise_name_array{noise_index,1},'/',noise_name_array{noise_index,2},'.wav');
     [noise_wav,fs_noise] = audioread(noise_dir);
     if fs_noise ~= fs_speech
         noise_wav = resample(noise_wav,fs_speech,fs_noise);
@@ -528,49 +501,38 @@ end
     SNR_index_pool=SNR_index_pool(SNR_index_pool~=SNR_index);
     
     binaural_out = mod_binaural_speech + 10^(-(SNR(1,SNR_index) + n_db)/20)*diffuse_noise;
-
+    
     binaural_out = reshape(zscore(binaural_out(:)),size(binaural_out,1),size(binaural_out,2));
     anechoic_speech = reshape(zscore(anechoic_speech(:)),size(anechoic_speech,1),size(anechoic_speech,2));
-    
-    %xl = anechoic_speech_norm;
-    %xr = anechoic_speech_norm;
-    
-    %yl = binaural_out_norm(:,1);
-    %yr = binaural_out_norm(:,2);
 
-    %mbstoi_norm = mbstoi_intermediate(xl,xr,yl,yr,fs_speech);
-    
     xl = anechoic_speech;
     xr = anechoic_speech;
-    
+
     yl = binaural_out(:,1);
     yr = binaural_out(:,2);
-    
+
     mbstoi = mbstoi_intermediate(xl,xr,yl,yr,fs_speech);
-    
-    %equal_check = isequal(mbstoi,mbstoi_norm);
     if ~isempty(TRAIN_strfind)
-        out_dir = strcat(out_base_dir,'\',out_data_subdir,'\',num2str(TIMIT_train_file_count));
+        out_dir = strcat(out_base_dir,'/',out_data_subdir,'/',num2str(TIMIT_train_file_count));
     elseif ~isempty(TEST_strfind)
-        out_dir = strcat(out_base_dir,'\',out_data_subdir,'\',num2str(TIMIT_test_file_count));
+        out_dir = strcat(out_base_dir,'/',out_data_subdir,'/',num2str(TIMIT_test_file_count));
     else
         error('something went wrong')
     end
     mkdir(out_dir);
-    mat_file_name = strcat(out_dir,'\','mbstoi.mat');
+    mat_file_name = strcat(out_dir,'/','mbstoi.mat');
     save(mat_file_name,'mbstoi');
-    %save(mat_file_name,'mbstoi_norm','mbstoi','equal_check');
-    
+    out_mixed_wav_dir = strcat(out_dir,'/','mixed.wav');
     out_clean_wav_dir = strcat(out_dir,'/','clean.wav');
-    out_mixed_wav_dir = strcat(out_dir,'\','mixed.wav');
+    %out_rev_wav_dir = strcat(out_dir,'/','rev.wav');
     v_writewav(binaural_out,16000,out_mixed_wav_dir,[],[],[],[]);
     v_writewav(anechoic_speech,16000,out_clean_wav_dir,[],[],[],[]);
-    fileID = fopen(strcat(out_dir,'\','log.txt'),'w');
+    fileID = fopen(strcat(out_dir,'/','log.txt'),'w');
     fprintf(fileID,'mbstoi.mat contains the full mbstoi array, where the first dimension corresponds to the one-third octave bands and the second dimension correpsonds to the intermediate intelligbility indexes (blocks of 4096 samples at 10000 Khz of pure speech');
     fprintf(fileID,'The clean reference speech used was anechoic TIMIT speech \n');
     %fprintf(fileID,'For both of these index 1 and 2 are using anechoic and reverberant speech as clean respectively \n');
     fprintf(fileID,'\n\n');
-    fprintf(fileID,strcat(strrep(strcat('directory of TIMIT file used: ',TIMIT_wav_dirs{TIMIT_wav_index,1}),'\','/'),' \n'));
+    fprintf(fileID,strcat(strrep(strcat('directory of TIMIT file used: ',TIMIT_wav_dirs{TIMIT_wav_index,1}),'/','/'),' \n'));
     fprintf(fileID,'SNR: %.1f',SNR(1,SNR_index));
     fprintf(fileID,'\n\n');
     if measured_vs_simulated_index == 2
@@ -589,7 +551,7 @@ end
     elseif measured_vs_simulated_index == 1
         fprintf(fileID,'Impulse Response Parameters: \n');
         fprintf(fileID,'Measured \n');
-        fprintf(fileID,strcat(strrep(strcat('directory of measured impulse response used: ',measured_BRIR_wav_dirs{measured_BRIR_index,1}),'\','/'),' \n'));
+        fprintf(fileID,strcat('directory of measured impulse response used: ',measured_BRIR_wav_dirs{measured_BRIR_index,1}),' \n');
     else 
         error('something went wrong');
     end
