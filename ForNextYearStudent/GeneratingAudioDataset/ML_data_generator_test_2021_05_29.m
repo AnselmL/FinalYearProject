@@ -14,15 +14,15 @@
 %file just reads them from a directory.
 
 clear all;
-addpath(genpath('D:\FYP\MATLAB\MBSTOI'));
-addpath(genpath('D:\FYP\MATLAB\submodules'));
-addpath(genpath('D:\FYP\MATLAB\other_dependencies'));
-addpath(genpath('D:\FYP\MATLAB\RIR-Generator-master'));
-addpath(genpath('D:\FYP\MATLAB\ANF-Generator-master'));
+addpath(genpath('E:\FYP\MATLAB\MBSTOI'));
+addpath(genpath('E:\FYP\MATLAB\submodules'));
+addpath(genpath('E:\FYP\MATLAB\other_dependencies'));
+addpath(genpath('E:\FYP\MATLAB\RIR-Generator-master'));
+addpath(genpath('E:\FYP\MATLAB\ANF-Generator-master'));
 
-base_dir = 'D:\FYP\MATLAB';
+base_dir = 'E:\FYP\MATLAB';
 
-out_base_dir = 'D:\FYP\feature_preprocessing_input\directional_2021_05_28\TEST';
+out_base_dir = 'E:\FYP\feature_preprocessing_input\directional_2021_11_11\TEST';
 
 TIMIT_wav_dirs = load('TIMIT_wav_dirs_split').TIMIT_wav_dirs_test;
 

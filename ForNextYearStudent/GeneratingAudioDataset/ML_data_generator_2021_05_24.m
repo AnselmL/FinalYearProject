@@ -1,4 +1,4 @@
-%script written by A. Lohmann as part the MEng Final Year Project
+%script written by A. Lohmann as part the MEng Final Year ProjectHRIR_base
 
 %script to generate training data files with BRIR simulation (this is what
 %was used for the final project)
@@ -11,25 +11,25 @@
 clear all;
 
 %adding paths for files, you will likely need to change the directories
-addpath(genpath('D:\FYP\MATLAB\MBSTOI'));
-addpath(genpath('D:\FYP\MATLAB\submodules'));
-addpath(genpath('D:\FYP\MATLAB\other_dependencies'));
-addpath(genpath('D:\FYP\MATLAB\RIR-Generator-master'));
-addpath(genpath('D:\FYP\MATLAB\ANF-Generator-master'));
+addpath(genpath('E:\FYP\MATLAB\MBSTOI'));
+addpath(genpath('E:\FYP\MATLAB\submodules'));
+addpath(genpath('E:\FYP\MATLAB\other_dependencies'));
+addpath(genpath('E:\FYP\MATLAB\RIR-Generator-master'));
+addpath(genpath('E:\FYP\MATLAB\ANF-Generator-master'));
 
 
 %the base directory
-base_dir = 'D:\FYP\MATLAB';
+base_dir = 'E:\FYP\MATLAB';
 
 %the directory where HRTF/HRIR files are stored (I have tried replacing the
 %majority of place HRTF was used for HRIR as that the correct version. In
 %certain places I have left hrtf because that is what the files will be
 %called. If there is any bug in the code, the naming here is likely the
 %place to look.)
-HRTF_base_dir = 'D:\FYP\MATLAB\HRTF';
+HRIR_base_dir = 'E:\FYP\MATLAB\HRTF';
 
 %the directory in which the training audio files will be saved
-out_base_dir = 'D:\FYP\feature_preprocessing_input\directional_2021_06_02\TRAIN';
+out_base_dir = 'E:\FYP\feature_preprocessing_input\directional_2021_11_11\TRAIN';
 
 
 %creating cell array containing TIMIT file wav directories

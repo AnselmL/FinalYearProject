@@ -11,20 +11,20 @@
 
 %for insight into how the code works, please refer to the
 %ML_data_generator_2021_05_24.m file, which is mostly similar in structure,
-%with more complicated implementation due to simulation BRIRs where this
-%file just reads them from a directory.
+%with more complicated implementation due to simulation of BRIRs where this
+%file just simulates RIR.
 
 clear all;
-addpath(genpath('D:\FYP\MATLAB\MBSTOI'));
-addpath(genpath('D:\FYP\MATLAB\submodules'));
-addpath(genpath('D:\FYP\MATLAB\other_dependencies'));
-addpath(genpath('D:\FYP\MATLAB\RIR-Generator-master'));
-addpath(genpath('D:\FYP\MATLAB\ANF-Generator-master'));
+addpath(genpath('E:\FYP\MATLAB\MBSTOI'));
+addpath(genpath('E:\FYP\MATLAB\submodules'));
+addpath(genpath('E:\FYP\MATLAB\other_dependencies'));
+addpath(genpath('E:\FYP\MATLAB\RIR-Generator-master'));
+addpath(genpath('E:\FYP\MATLAB\ANF-Generator-master'));
 
-base_dir = 'D:\FYP\MATLAB';
-HRTF_base_dir = 'D:\FYP\MATLAB\HRTF';
+base_dir = 'E:\FYP\MATLAB';
+HRTF_base_dir = 'E:\FYP\MATLAB\HRTF';
 
-out_base_dir = 'D:\FYP\feature_preprocessing_input\directional_nohrtf_2021_06_02\TRAIN';
+out_base_dir = 'E:\FYP\feature_preprocessing_input\directional_nohrtf_2021_11_11\TRAIN';
 
 TIMIT_wav_dirs = load('TIMIT_wav_dirs_split').TIMIT_wav_dirs_train;
 
